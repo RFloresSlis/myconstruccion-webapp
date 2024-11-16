@@ -14,6 +14,22 @@ pipeline {
                 bat 'mvn clean package'
             }
         }
+        stage('Upload to Artifactory') {
+            steps {
+                script {
+                    def server = Artifactory.server('jFrogServer')
+                    def uploadSpec = """{
+                        "files": [
+                            {
+                                "pattern": "target/*.war",
+                                "target": "myconstruccion-repo/"
+                            }
+                        ]
+                    }"""
+                    server.upload(uploadSpec)
+                }
+            }
+        }
     }
     post {
         success {
